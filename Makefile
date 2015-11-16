@@ -4,8 +4,6 @@
 all:
 
 clean:
-	$(RM) *~ proxyProcess.out
-	$(RM) *~ proxy.out
 	$(RM) *~ *.pyc
 
 
