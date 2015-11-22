@@ -6,10 +6,11 @@ all:
 clean:
 	$(RM) *~ *.pyc
 
-
-
 run-client:
 	./Client.py --Ice.Config=locator.config 'drobots'
+
+run-client:
+	./Client.py --Ice.Config=locator.config 'drobots1'
 
 run-client2:
 	./Client.py --Ice.Config=locator.config 'drobots2'
