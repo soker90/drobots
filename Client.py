@@ -41,8 +41,8 @@ class PlayerI(drobots.Player):
         return drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
     def win(self,current=None):
         print("Ganaste")
-    def lose(self):
-        return 0
+    def lose(self,current=None):
+        print("Perdiste")
 
 class RobotControllerI(drobots.RobotController):
     def __init__(self,bot):
