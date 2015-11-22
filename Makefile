@@ -20,3 +20,6 @@ run-client3:
 
 run-client4:
 	./Client.py --Ice.Config=locator.config 'drobots4'
+
+run-examen:
+	./Client.py --Ice.Config=locator.config 'drobotsexam'
