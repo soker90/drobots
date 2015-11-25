@@ -25,7 +25,7 @@ class Cliente(Ice.Application):
         game = drobots.GamePrx.checkedCast(proxyGame)
 
         adapter.activate()
-        game.attach(player)
+        game.login(player,"Eduardo.Parra")
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -50,7 +50,7 @@ class RobotControllerI(drobots.RobotController):
         self.speed = 100
     def turn(self,current=None):
         location = self.bot.location()
-        angulo = math.atan(location.y/location.x)*100
+        angulo = math.atan(location.y/location.x)
         print(location)
         if(location.x == 500):
             if location.y > 500:

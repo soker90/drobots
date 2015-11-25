@@ -7,13 +7,16 @@ module drobots {
     int y;
   };
 
+  exception NoEnoughEnergy{};
+
   interface Robot {
-    int scan(int angle, int wide);
-    bool cannon(int angle, int distance);
-    void drive(int angle, int speed);
-    short damage();
-    int speed();
-    Point location();
+    int scan(int angle, int wide) throws NoEnoughEnergy;
+    bool cannon(int angle, int distance) throws NoEnoughEnergy;
+    void drive(int angle, int speed) throws NoEnoughEnergy;
+    short damage() throws NoEnoughEnergy;
+    short speed() throws NoEnoughEnergy;
+    Point location() throws NoEnoughEnergy;
+    short energy() throws NoEnoughEnergy;
   };
 
   interface RobotController {
@@ -29,8 +32,10 @@ module drobots {
 
   exception GameInProgress{};
   exception InvalidProxy{};
+  exception InvalidName{};
 
   interface Game {
-    void attach(Player* p) throws GameInProgress, InvalidProxy;
+    void login(Player* p, string nick)
+      throws GameInProgress, InvalidProxy, InvalidName;
   };
 };

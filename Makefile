@@ -9,7 +9,7 @@ clean:
 run-client:
 	./Client.py --Ice.Config=locator.config 'drobots'
 
-run-client:
+run-client1:
 	./Client.py --Ice.Config=locator.config 'drobots1'
 
 run-client2:
