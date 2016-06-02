@@ -6,6 +6,9 @@ all:
 clean:
 	$(RM) *~ *.pyc
 
+run-container:
+	./container.py --Ice.Config=container.config | tee proxyContainer.out
+
 run-client1:
 	./Client.py --Ice.Config=locator.config 'drobots1'
 
