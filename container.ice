@@ -8,6 +8,5 @@ module Services {
     void link(string key, Object* proxy) throws AlreadyExists;
     void unlink(string key) throws NoSuchKey;
     ObjectPrxDict list();
-    ObjectPrxDict listR();
   };
 };

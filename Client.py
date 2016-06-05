@@ -5,6 +5,8 @@ import sys
 import Ice
 Ice.loadSlice('drobots.ice')
 import drobots
+Ice.loadSlice('-I %s container.ice' % Ice.getSliceDir())
+import Services
 import math
 import random
 import Container
@@ -15,12 +17,15 @@ class Cliente(Ice.Application):
         broker = self.communicator()
 
         adapter = broker.createObjectAdapter('PlayerAdapter')
-        servant = Container.ContainerI()
+        adapter.activate()
 
+        servantContainer = Container.ContainerI()
+        proxyContainer = adapter.addWithUUID(servantContainer) #adapter.add(servantContainer, broker.stringToIdentity('container1')) #
 
-        playerServant = PlayerI()
+        print(proxyContainer)
+
+        playerServant = PlayerI(str(proxyContainer),broker)
         proxyPlayer = adapter.addWithUUID(playerServant)
-        adapter.add(servant, broker.stringToIdentity("container1"))
 
 
         player=drobots.PlayerPrx.checkedCast(proxyPlayer)
@@ -28,7 +33,7 @@ class Cliente(Ice.Application):
         proxyGame = broker.stringToProxy(argv[1])
         game = drobots.GamePrx.checkedCast(proxyGame)
 
-        adapter.activate()
+
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
         game.login(player,nick)
 
@@ -37,8 +42,11 @@ class Cliente(Ice.Application):
 
 class PlayerI(drobots.Player):
 
-    #def __init__(self,adapter):
-    #    self.adapter = adapter #current
+    def __init__(self,proxyContainer,broker):
+        self.broker = broker
+        self.proxyContainer = proxyContainer
+        self.container = self.crear_container()
+
 
     def makeController(self,bot,current=None):
         if (bot.ice_isA("::drobots::Attacker")):
@@ -57,6 +65,11 @@ class PlayerI(drobots.Player):
     def gameAbort(self, current=None):
         print("Juego cancelado")
         current.adapter.getCommunicator().shutdown()
+
+    def crear_container(self):
+        proxy = self.broker.stringToProxy(self.proxyContainer)
+        container = Services.ContainerPrx.checkedCast(proxy)
+        return container
 
 class RobotControllerAtaque(drobots.RobotController):
     def __init__(self,bot):
