@@ -20,9 +20,7 @@ class Cliente(Ice.Application):
         adapter.activate()
 
         servantContainer = Container.ContainerI()
-        proxyContainer = adapter.addWithUUID(servantContainer) #adapter.add(servantContainer, broker.stringToIdentity('container1')) #
-
-        print(proxyContainer)
+        proxyContainer = adapter.addWithUUID(servantContainer)
 
         playerServant = PlayerI(str(proxyContainer),broker)
         proxyPlayer = adapter.addWithUUID(playerServant)
@@ -36,6 +34,7 @@ class Cliente(Ice.Application):
 
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
         game.login(player,nick)
+        print("Entrado en el juego")
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -44,16 +43,19 @@ class PlayerI(drobots.Player):
 
     def __init__(self,proxyContainer,broker):
         self.broker = broker
+        self.i = 1
         self.proxyContainer = proxyContainer
         self.container = self.crear_container()
 
 
     def makeController(self,bot,current=None):
         if (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot)
+            RobotControllerServant = RobotControllerAtaque(bot,self.container)
         elif (bot.ice_isA("::drobots::Defender")):
-            RobotControllerServant = RobotControllerDefensa(bot)
+            RobotControllerServant = RobotControllerDefensa(bot,self.container)
         proxyRobotController = current.adapter.addWithUUID(RobotControllerServant)
+        self.container.link(str(self.i),proxyRobotController)
+        self.i += 1
         return drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
 
     def win(self,current=None):
@@ -72,10 +74,11 @@ class PlayerI(drobots.Player):
         return container
 
 class RobotControllerAtaque(drobots.RobotController):
-    def __init__(self,bot):
+    def __init__(self,bot,container):
         self.bot = bot
         self.speed = 100
         self.i = 0
+        self.container = container
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -169,11 +172,12 @@ class RobotControllerAtaque(drobots.RobotController):
         print("El robot ha sido destruido")
 
 class RobotControllerDefensa(drobots.RobotController):
-    def __init__(self, bot):
+    def __init__(self, bot, container):
         self.bot = bot
         self.speed = 100
         self.i = 0
         self.danyo = 0
+        self.container = container
 
     def mover(self,location,angulo):
         if (location.x == 500):
@@ -219,7 +223,7 @@ class RobotControllerDefensa(drobots.RobotController):
 
 
     def robotDestroyed(self, current=None):
-        print("El robot ha sido destruido")
+        print("Robot destruido")
 
 
 sys.exit(Cliente().main(sys.argv))
