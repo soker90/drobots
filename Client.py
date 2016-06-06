@@ -79,6 +79,8 @@ class RobotControllerAtaque(drobots.RobotController):
         self.speed = 100
         self.i = 0
         self.container = container
+        self.anguloDisparo = None
+        self.proxys = self.getProxys()
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -117,7 +119,21 @@ class RobotControllerAtaque(drobots.RobotController):
 
         self.i = self.i+1
 
-        # if(location.x == 500):
+    def getProxys(self):
+        proxys = []
+        lista = self.container.list()
+
+        for i in range(1, 4):
+            proxy = self.container.getElementAt(i)
+            proxy = drobots.RobotControllerPrx.uncheckedCast(proxy)
+            proxys.append(proxy)
+
+        return proxys
+
+        #con = drobots2.CoordinacionPrx.uncheckedCast(proxis["3"])
+        #con2 = drobots2.CoordinacionPrx.uncheckedCast(proxis["4"])
+
+        # if(location.x == 500):container.list()
         #     if location.y > 500:
         #         if(self.bot.scan(angulo,self.speed)):
         #             self.bot.cannon(270,self.speed)
@@ -169,7 +185,7 @@ class RobotControllerAtaque(drobots.RobotController):
 
 
     def robotDestroyed(self, current=None):
-        print("El robot ha sido destruido")
+        print("Robot atacante destruido")
 
 class RobotControllerDefensa(drobots.RobotController):
     def __init__(self, bot, container):
@@ -178,6 +194,8 @@ class RobotControllerDefensa(drobots.RobotController):
         self.i = 0
         self.danyo = 0
         self.container = container
+        self.anguloDisparo = None
+        self.proxys = container.list()
 
     def mover(self,location,angulo):
         if (location.x == 500):
@@ -206,6 +224,16 @@ class RobotControllerDefensa(drobots.RobotController):
         else:
             self.speed = 100
 
+    def scan(self):
+        angulo = random.randint(0,359)
+        detectados = self.bot.scan(angulo, 30)
+
+        if detectados != 0:
+            self.bot.drive(0, 0)
+            self.anguloDisparo = angulo
+
+        print("Angulo: " + str(angulo) + "Enemigos: " + str(detectados))
+
 
     def turn(self, current=None):
         location = self.bot.location()
@@ -219,11 +247,12 @@ class RobotControllerDefensa(drobots.RobotController):
             self.mover(location,angulo)
         else:
             self.bot.drive(angulo, 0)
+            self.scan()
 
 
 
     def robotDestroyed(self, current=None):
-        print("Robot destruido")
+        print("Robot defensor destruido")
 
 
 sys.exit(Cliente().main(sys.argv))
