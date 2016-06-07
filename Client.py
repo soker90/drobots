@@ -118,8 +118,8 @@ class RobotControllerAtaque(drobots.RobotController):
 
 
     def turn(self,current=None):
-        if( self.proxys is None):
-            self.proxys = self.getProxys()
+        #if( self.proxys is None):
+        #    self.proxys = self.getProxys()
         location = self.bot.location()
         angulo = math.atan(location.y/location.x)
         if(self.i%2==0):
@@ -137,15 +137,9 @@ class RobotControllerAtaque(drobots.RobotController):
         for i in range(1, 5):
             proxy = lista[str(i)]
             proxy = drobots.RobotControllerPrx.uncheckedCast(proxy)
-
-            if (proxy.ice_isA("::drobots::Defender")):
-                proxys.append(proxy)
+            proxys.append(proxy)
 
         return proxys
-
-
-        #con = drobots2.CoordinacionPrx.uncheckedCast(proxis["3"])
-        #con2 = drobots2.CoordinacionPrx.uncheckedCast(proxis["4"])
 
         # if(location.x == 500):container.list()
         #     if location.y > 500:
@@ -210,6 +204,9 @@ class RobotControllerDefensa(drobots.RobotController):
         self.container = container
         self.anguloDisparo = None
         self.proxys = container.list()
+
+    def getTipo(self):
+        return "defensa"
 
     def mover(self,location,angulo):
         if (location.x == 500):
