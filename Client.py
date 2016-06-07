@@ -80,7 +80,7 @@ class RobotControllerAtaque(drobots.RobotController):
         self.i = 0
         self.container = container
         self.anguloDisparo = None
-        self.proxys = self.getProxys()
+        self.proxys = None
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -109,11 +109,22 @@ class RobotControllerAtaque(drobots.RobotController):
         else:
             self.speed = 100
 
+    def disparar(self):
+        nProxys = len(self.proxys)
+        random.randint(1, 100)
+
+        #n = random.randint(1,nProxys)
+        print(nProxys)
+
+
     def turn(self,current=None):
+        if( self.proxys is None):
+            self.proxys = self.getProxys()
         location = self.bot.location()
         angulo = math.atan(location.y/location.x)
         if(self.i%2==0):
             self.bot.cannon(angulo, self.speed)
+            self.disparar()
         else:
             self.mover(location, angulo)
 
@@ -123,12 +134,15 @@ class RobotControllerAtaque(drobots.RobotController):
         proxys = []
         lista = self.container.list()
 
-        for i in range(1, 4):
-            proxy = self.container.getElementAt(i)
+        for i in range(1, 5):
+            proxy = lista[str(i)]
             proxy = drobots.RobotControllerPrx.uncheckedCast(proxy)
-            proxys.append(proxy)
+
+            if (proxy.ice_isA("::drobots::Defender")):
+                proxys.append(proxy)
 
         return proxys
+
 
         #con = drobots2.CoordinacionPrx.uncheckedCast(proxis["3"])
         #con2 = drobots2.CoordinacionPrx.uncheckedCast(proxis["4"])
@@ -248,6 +262,9 @@ class RobotControllerDefensa(drobots.RobotController):
         else:
             self.bot.drive(angulo, 0)
             self.scan()
+
+    def getAnguloDisparo(self):
+        return self.anguloDisparo
 
 
 
