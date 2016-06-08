@@ -54,8 +54,9 @@ class PlayerI(drobots.Player):
         elif (bot.ice_isA("::drobots::Defender")):
             RobotControllerServant = RobotControllerDefensa(bot,self.container)
         proxyRobotController = current.adapter.addWithUUID(RobotControllerServant)
-        self.container.link(str(self.i),proxyRobotController)
-        self.i += 1
+        if(RobotControllerServant.getTipo() == "defensa"):
+            self.container.link(str(self.i),proxyRobotController)
+            self.i += 1
         return drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
 
     def win(self,current=None):
@@ -73,7 +74,7 @@ class PlayerI(drobots.Player):
         container = Services.ContainerPrx.checkedCast(proxy)
         return container
 
-class RobotControllerAtaque(drobots.RobotController):
+class RobotControllerAtaque(drobots.RobotControllerAtaque):
     def __init__(self,bot,container):
         self.bot = bot
         self.speed = 100
@@ -81,6 +82,9 @@ class RobotControllerAtaque(drobots.RobotController):
         self.container = container
         self.anguloDisparo = None
         self.proxys = None
+
+    def getTipo(self):
+        return "ataque"
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -113,13 +117,14 @@ class RobotControllerAtaque(drobots.RobotController):
         nProxys = len(self.proxys)
         random.randint(1, 100)
 
-        #n = random.randint(1,nProxys)
-        print(nProxys)
+        n = random.randint(1,nProxys)
+
+        print(self.proxys[n].getAnguloDisparo())
 
 
     def turn(self,current=None):
-        #if( self.proxys is None):
-        #    self.proxys = self.getProxys()
+        if( self.proxys is None):
+            self.proxys = self.getProxys()
         location = self.bot.location()
         angulo = math.atan(location.y/location.x)
         if(self.i%2==0):
@@ -134,11 +139,11 @@ class RobotControllerAtaque(drobots.RobotController):
         proxys = []
         lista = self.container.list()
 
-        for i in range(1, 5):
+        for i in range(1, len(lista)+1):
             proxy = lista[str(i)]
             proxy = drobots.RobotControllerPrx.uncheckedCast(proxy)
             proxys.append(proxy)
-
+            print("1")
         return proxys
 
         # if(location.x == 500):container.list()
@@ -195,7 +200,7 @@ class RobotControllerAtaque(drobots.RobotController):
     def robotDestroyed(self, current=None):
         print("Robot atacante destruido")
 
-class RobotControllerDefensa(drobots.RobotController):
+class RobotControllerDefensa(drobots.RobotControllerDefensa):
     def __init__(self, bot, container):
         self.bot = bot
         self.speed = 100

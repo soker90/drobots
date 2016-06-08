@@ -49,4 +49,13 @@ module drobots {
     void login(Player* p, string nick)
       throws GameInProgress, InvalidProxy, InvalidName;
   };
+
+  interface RobotControllerDefensa extends drobots::RobotController{
+        int getAnguloDisparo();
+        string getTipo();
+    };
+
+    interface RobotControllerAtaque extends drobots::RobotController{
+        string getTipo();
+    };
 };
