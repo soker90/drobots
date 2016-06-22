@@ -11,16 +11,16 @@ import random
 import Container
 
 class RobotControllerAtaque(drobots.RobotControllerAtaque):
-    def __init__(self,bot,container):
-        self.bot = bot
+    def __init__(self):
+        self.bot = None
         self.speed = 100
         self.i = 0
-        self.container = container
+        self.container = None
         self.anguloDisparo = None
         self.proxys = None
 
-    def getTipo(self):
-        return "ataque"
+    def setBot(self, bot):
+        self.bot = bot;
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -146,8 +146,8 @@ class RobotControllerDefensa(drobots.RobotControllerDefensa):
         self.anguloDisparo = None
         self.proxys = container.list()
 
-    def getTipo(self):
-        return "defensa"
+    def setBot(self, bot):
+        self.bot = bot;
 
     def mover(self,location,angulo):
         if (location.x == 500):

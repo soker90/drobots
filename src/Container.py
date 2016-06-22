@@ -3,7 +3,7 @@
 
 import sys
 import Ice
-Ice.loadSlice('-I %s services.ice' % Ice.getSliceDir())
+Ice.loadSlice('services.ice')
 import Services
 
 

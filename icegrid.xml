@@ -16,7 +16,7 @@
          </server>
       </server-template>
       <node name="node1">
-         <server id="Container" activation="always" exe="./src/Container.py" pwd="/home/edu/drobots/src/">
+         <server id="Container" activation="always" exe="./Container.py" pwd="/home/edu/drobots/src/">
             <env>directory=/tmp/db/container</env>
             <properties>
             </properties>
@@ -25,6 +25,18 @@
                <object identity="container" property="Identity"/>
             </adapter>
          </server>
+         <server id="Player" activation="manual" exe="./Client.py" pwd="/home/edu/drobots/src/">
+            <env>directory=/tmp/db/player</env>
+            <properties>
+               <property name="Game.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
+               <property name="Game" value="drobots3"/>
+            </properties>
+            <adapter name="PlayerAdapter" endpoints="default" id="${server}.PlayerAdapter">
+               <object identity="player"/>
+            </adapter>
+         </server>
+      </node>
+      <node name="node2">
       </node>
    </application>
 </icegrid>

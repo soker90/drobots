@@ -26,12 +26,14 @@ class Cliente(Ice.Application):
 
         player=drobots.PlayerPrx.checkedCast(proxyPlayer)
 
-        proxyGame = broker.stringToProxy(argv[1])
+        proxyGame = broker.propertyToProxy("Game")
+        print(proxyGame)
         game = drobots.GamePrx.checkedCast(proxyGame)
 
 
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
-        game.login(player,nick)
+        er = game.login(player,nick)
+        print(er)
         print("Entrado en el juego")
 
         self.shutdownOnInterrupt()
