@@ -1,8 +1,9 @@
 #!/usr/bin/python -u
+# -*- coding:utf-8; tab-width:4; mode:python -*-
 
 import sys
 import Ice
-Ice.loadSlice('container.ice')
+Ice.loadSlice('-I %s services.ice' % Ice.getSliceDir())
 import Services
 
 
@@ -26,3 +27,24 @@ class ContainerI(Services.Container):
 
     def list(self, current=None):
         return self.proxies
+
+
+class Server(Ice.Application):
+    def run(self, argv):
+        broker = self.communicator()
+        servant = ContainerI()
+
+        adapter = broker.createObjectAdapter("ContainerAdapter")
+        proxy = adapter.add(servant, broker.stringToIdentity("container"))
+
+        print(proxy)
+
+        adapter.activate()
+        self.shutdownOnInterrupt()
+        broker.waitForShutdown()
+
+        return 0
+
+
+if __name__ == '__main__':
+    sys.exit(Server().main(sys.argv))

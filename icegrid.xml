@@ -4,31 +4,27 @@
    <application name="drobots">
       <distrib icepatch="${application}.IcePatch2/server"/>
       <server-template id="FactoryTemplate">
-         <server id="Factory" activation="always" exe="./src/Factory.py">
+         <parameter name="index"/>
+         <server id="Factory${index}" activation="always" exe="./src/Factory.py" pwd="/home/edu/drobots/src/">
             <properties>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
-            <adapter name="FactoryAdapter" endpoints="default" id="${server}.FactoryAdapter"/>
+            <adapter name="FactoryAdapter" endpoints="tcp" id="${server}.FactoryAdapter">
+               <object identity="factory${index}" type="::services::Factory" property="Identity"/>
+            </adapter>
          </server>
       </server-template>
-      <node name="nodo1">
-         <server id="Container" activation="always" exe="./src/Container.py">
+      <node name="node1">
+         <server id="Container" activation="always" exe="./src/Container.py" pwd="/home/edu/drobots/src/">
+            <env>directory=/tmp/db/container</env>
             <properties>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
-            <adapter name="ContainerAdapter" endpoints="default" id="${server}.ContainerAdapter"/>
+            <adapter name="ContainerAdapter" endpoints="tcp -p 10004" id="${server}.ContainerAdapter">
+               <object identity="container" property="Identity"/>
+            </adapter>
          </server>
-         <server-instance template="FactoryTemplate"/>
-      </node>
-      <node name="nodo2">
-         <server-instance template="FactoryTemplate"/>
-      </node>
-      <node name="nodo3">
-         <server-instance template="FactoryTemplate"/>
-      </node>
-      <node name="nodo4">
-         <server-instance template="FactoryTemplate"/>
       </node>
    </application>
 </icegrid>

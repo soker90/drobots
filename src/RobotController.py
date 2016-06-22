@@ -4,7 +4,7 @@ import sys
 import Ice
 Ice.loadSlice('drobots.ice')
 import drobots
-Ice.loadSlice('-I %s container.ice' % Ice.getSliceDir())
+Ice.loadSlice('-I %s services.ice' % Ice.getSliceDir())
 import Services
 import math
 import random

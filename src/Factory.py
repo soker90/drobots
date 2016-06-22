@@ -4,13 +4,11 @@ import sys
 import Ice
 Ice.loadSlice('drobots.ice')
 import drobots
-Ice.loadSlice('-I %s container.ice' % Ice.getSliceDir())
+Ice.loadSlice('-I %s services.ice' % Ice.getSliceDir())
+import Services
 from RobotController import *
 
-class ControllerFactoryI(drobots.ControllerFactory):
-    def __init__(self):
-        pass
-
+class FactoryI(Services.Factory):
     def make(self, bot, container, key, current=None):
 
         if (bot.ice_isA("::drobots::Attacker")):
@@ -24,13 +22,14 @@ class ControllerFactoryI(drobots.ControllerFactory):
         container.link(key,proxy)
         return drobots.RobotControllerPrx.uncheckedCast(proxy)
 
+##Crear interfaz ice
 
-class ServerFactory(Ice.Application):
+class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        servant = FactoryI()
         adapter = broker.createObjectAdapter("FactoryAdapter")
-        servant = ControllerFactoryI()
-        proxy = adapter.add(servant, broker.stringToIdentity("factory"))
+        adapter.add(servant, broker.stringToIdentity("factory"))
 
         adapter.activate()
         self.shutdownOnInterrupt()
@@ -38,6 +37,5 @@ class ServerFactory(Ice.Application):
 
         return 0
 
-
-factory = ServerFactory()
-sys.exit(factory.main(sys.argv))
+if __name__ == '__main__':
+    sys.exit(Server().main(sys.argv))

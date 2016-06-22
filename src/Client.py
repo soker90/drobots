@@ -5,7 +5,7 @@ import sys
 import Ice
 Ice.loadSlice('drobots.ice')
 import drobots
-Ice.loadSlice('-I %s container.ice' % Ice.getSliceDir())
+Ice.loadSlice('services.ice')
 import Services
 import math
 import random
@@ -20,10 +20,7 @@ class Cliente(Ice.Application):
         adapter = broker.createObjectAdapter('PlayerAdapter')
         adapter.activate()
 
-        servantContainer = Container.ContainerI()
-        proxyContainer = adapter.addWithUUID(servantContainer)
-
-        playerServant = PlayerI(str(proxyContainer),broker)
+        playerServant = PlayerI(broker)
         proxyPlayer = adapter.addWithUUID(playerServant)
 
 
@@ -42,10 +39,9 @@ class Cliente(Ice.Application):
 
 class PlayerI(drobots.Player):
 
-    def __init__(self,proxyContainer,broker):
+    def __init__(self,broker):
         self.broker = broker
         self.i = 1
-        self.proxyContainer = proxyContainer
         self.container = self.crear_container()
 
 
@@ -58,7 +54,10 @@ class PlayerI(drobots.Player):
         if(RobotControllerServant.getTipo() == "defensa"):
             self.container.link(str(self.i),proxyRobotController)
             self.i += 1
-        return drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
+        #robot = FactoryI.make(bot,self.container,self.i)
+        #self.i = self.i + 1
+        #return robot
+        drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
 
     def win(self,current=None):
         print("Ganaste")
@@ -71,11 +70,9 @@ class PlayerI(drobots.Player):
         current.adapter.getCommunicator().shutdown()
 
     def crear_container(self):
-        proxy = self.broker.stringToProxy(self.proxyContainer)
+        proxy = self.broker.stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxy)
         return container
-
-
 
 
 sys.exit(Cliente().main(sys.argv))
