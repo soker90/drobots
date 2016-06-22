@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- This file was written by IceGrid Admin -->
+<icegrid>
+   <application name="drobots">
+      <distrib icepatch="${application}.IcePatch2/server"/>
+      <server-template id="FactoryTemplate">
+         <server id="Factory" activation="always" exe="./src/Factory.py">
+            <properties>
+               <property name="Ice.ThreadPool.Server.Size" value="10"/>
+            </properties>
+            <distrib icepatch="${application}.IcePatch2/server"/>
+            <adapter name="FactoryAdapter" endpoints="default" id="${server}.FactoryAdapter"/>
+         </server>
+      </server-template>
+      <node name="nodo1">
+         <server id="Container" activation="always" exe="./src/Container.py">
+            <properties>
+            </properties>
+            <distrib icepatch="${application}.IcePatch2/server"/>
+            <adapter name="ContainerAdapter" endpoints="default" id="${server}.ContainerAdapter"/>
+         </server>
+         <server-instance template="FactoryTemplate"/>
+      </node>
+      <node name="nodo2">
+         <server-instance template="FactoryTemplate"/>
+      </node>
+      <node name="nodo3">
+         <server-instance template="FactoryTemplate"/>
+      </node>
+      <node name="nodo4">
+         <server-instance template="FactoryTemplate"/>
+      </node>
+   </application>
+</icegrid>
