@@ -11,6 +11,7 @@ import math
 import random
 import Container
 from RobotController import *
+from Factory import *
 
 class Cliente(Ice.Application):
     def run(self, argv):
@@ -29,14 +30,12 @@ class Cliente(Ice.Application):
         player=drobots.PlayerPrx.checkedCast(direct_prx)
 
         proxyGame = broker.propertyToProxy("Game")
-        print(proxyGame)
         #proxyGame = broker.stringToProxy('drobots3')
         game = drobots.GamePrx.checkedCast(proxyGame)
 
 
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
-        er = game.login(player,nick)
-        print(er)
+        game.login(player,nick)
         print("Entrado en el juego")
 
         self.shutdownOnInterrupt()
@@ -51,18 +50,16 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self,bot,current=None):
+        print "maque"
+
         if (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot,self.container)
+            tipo = 0
         elif (bot.ice_isA("::drobots::Defender")):
-            RobotControllerServant = RobotControllerDefensa(bot,self.container)
-        proxyRobotController = current.adapter.addWithUUID(RobotControllerServant)
-        if(RobotControllerServant.getTipo() == "defensa"):
-            self.container.link(str(self.i),proxyRobotController)
-            self.i += 1
-        #robot = FactoryI.make(bot,self.container,self.i)
-        #self.i = self.i + 1
-        #return robot
-        drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
+            tipo = 1
+        robot = FactoryI.make(tipo)
+        print("robot" + robot)
+        return robot
+
 
     def win(self,current=None):
         print("Ganaste")

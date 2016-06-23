@@ -11,6 +11,6 @@ module Services {
   };
 
   interface Factory {
-    void make(string key);
+    string make(string tipo);
   };
 };
