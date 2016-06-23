@@ -9,4 +9,8 @@ module Services {
     void unlink(string key) throws NoSuchKey;
     ObjectPrxDict list();
   };
+
+  interface Factory {
+    void make(string key);
+  };
 };
