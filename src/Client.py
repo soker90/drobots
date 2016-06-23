@@ -22,12 +22,15 @@ class Cliente(Ice.Application):
 
         playerServant = PlayerI(broker)
         proxyPlayer = adapter.addWithUUID(playerServant)
+        prx_id = proxyPlayer.ice_getIdentity()
+        direct_prx = adapter.createDirectProxy(prx_id)
 
 
-        player=drobots.PlayerPrx.checkedCast(proxyPlayer)
+        player=drobots.PlayerPrx.checkedCast(direct_prx)
 
         proxyGame = broker.propertyToProxy("Game")
         print(proxyGame)
+        #proxyGame = broker.stringToProxy('drobots3')
         game = drobots.GamePrx.checkedCast(proxyGame)
 
 
