@@ -1,3 +1,6 @@
+// -*- mode:c++ -*-
+#include "drobots.ice"
+
 module Services {
   exception AlreadyExists { string key; };
   exception NoSuchKey { string key; };
@@ -11,6 +14,6 @@ module Services {
   };
 
   interface Factory {
-    string make(string tipo);
+    drobots::RobotController* make(int tipo);
   };
 };

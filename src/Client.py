@@ -3,9 +3,8 @@
 
 import sys
 import Ice
-Ice.loadSlice('drobots.ice')
+Ice.loadSlice('services.ice --all -I .')
 import drobots
-Ice.loadSlice('services.ice')
 import Services
 import math
 import random
@@ -35,8 +34,17 @@ class Cliente(Ice.Application):
 
 
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
-        game.login(player,nick)
-        print("Entrado en el juego")
+
+        try:
+            print 'Haciendo login'
+            game.login(player,nick)
+            print 'Esperando robots'
+        except drobots.GameInProgress:
+            print "Partida en curso."
+        except drobots.InvalidProxy:
+            print "Proxy inválido"
+        except drobots.InvalidName:
+            print "Nombre inválido"
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -50,14 +58,17 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self,bot,current=None):
-        print "maque"
-
         if (bot.ice_isA("::drobots::Attacker")):
             tipo = 0
         elif (bot.ice_isA("::drobots::Defender")):
             tipo = 1
-        robot = FactoryI.make(tipo)
+
+        proxy = self.broker.stringToProxy("factory1")
+        factory = Services.FactoryPrx.checkedCast(proxy)
+        print "llega"
+        robot = factory.make(tipo)
         print("robot" + robot)
+        self.i = self.i + 1
         return robot
 
 
@@ -75,6 +86,8 @@ class PlayerI(drobots.Player):
         proxy = self.broker.stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxy)
         return container
+
+
 
 
 sys.exit(Cliente().main(sys.argv))

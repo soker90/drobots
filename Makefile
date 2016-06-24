@@ -26,6 +26,6 @@ stop:
 /tmp/db/%:
 	mkdir -p $@
 
-clean: stop-grid
+clean:
 	rm *~
 	rm -r /tmp/db

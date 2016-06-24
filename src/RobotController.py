@@ -3,10 +3,8 @@
 
 import sys
 import Ice
-Ice.loadSlice('drobots.ice')
+Ice.loadSlice('services.ice --all -I .')
 import drobots
-Ice.loadSlice('-I %s services.ice' % Ice.getSliceDir())
-import Services
 import math
 import random
 import Container

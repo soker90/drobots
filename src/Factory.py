@@ -3,14 +3,14 @@
 
 import sys
 import Ice
-Ice.loadSlice('services.ice')
-import Services
-Ice.loadSlice('drobots.ice')
+Ice.loadSlice('services.ice --all -I .')
 import drobots
+import Services
 from RobotController import *
 
-class FactoryI(Services.Factory):
+class Factory(Services.Factory):
     def make(self, tipo, current=None):
+        print "llega factory"
         if (tipo == 0):
             RobotControllerServant = RobotControllerAtaque()
         else:
@@ -32,7 +32,7 @@ class FactoryI(Services.Factory):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-        servant = FactoryI()
+        servant = Factory()
         adapter = broker.createObjectAdapter("FactoryAdapter")
         adapter.add(servant, broker.stringToIdentity("factory"))
 

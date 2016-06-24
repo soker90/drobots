@@ -12,7 +12,7 @@
                <property name="Ice.StdErr" value="/tmp/db/node${index}/err.txt"/>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
-            <adapter name="FactoryAdapter" endpoints="tcp -p 1100${index}" id="${server}.FactoryAdapter">
+            <adapter name="FactoryAdapter" endpoints="tcp -p 1000${index}" id="${server}.FactoryAdapter">
                <object identity="factory${index}" type="::services::Factory" property="Identity"/>
             </adapter>
          </server>
@@ -24,7 +24,7 @@
             <properties>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
-            <adapter name="ContainerAdapter" endpoints="tcp -p 10004" id="${server}.ContainerAdapter">
+            <adapter name="ContainerAdapter" endpoints="tcp -p 10010" id="${server}.ContainerAdapter">
                <object identity="container" property="Identity"/>
             </adapter>
          </server>
@@ -49,6 +49,11 @@
          <variable name="Ice.StdErr" value="/tmp/db/node3/err.txt"/>
          <variable name="Ice.StdOut" value="/tmp/db/node3/out.txt"/>
          <server-instance template="FactoryTemplate" index="3"/>
+      </node>
+      <node name="node4">
+         <variable name="Ice.StdErr" value="/tmp/db/node4/err.txt"/>
+         <variable name="Ice.StdOut" value="/tmp/db/node4/out.txt"/>
+         <server-instance template="FactoryTemplate" index="4"/>
       </node>
    </application>
 </icegrid>

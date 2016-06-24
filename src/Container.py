@@ -3,7 +3,7 @@
 
 import sys
 import Ice
-Ice.loadSlice('services.ice')
+Ice.loadSlice('services.ice --all -I .')
 import Services
 
 
