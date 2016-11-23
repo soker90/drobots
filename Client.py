@@ -36,6 +36,12 @@ class PlayerI(drobots.Player):
     def __init__(self):
         pass
 
+    def makeController(self, bot, current=None):
+        RobotControllerServant = RobotControllerI(bot)
+        proxyRobotController = current.adapter.addWithUUID(RobotControllerServant)
+
+        return drobots.RobotControllerPrx.uncheckedCast(proxyRobotController)
+
     def win(self,current=None):
         print("Has ganado")
         self.salida = 0
@@ -45,7 +51,7 @@ class PlayerI(drobots.Player):
         print("Has perdido")
         self.salida = 1
         current.adapter.getCommunicator().shutdown()
-        
+
     def gameAbort(self, current=None):
         print('Juego Abortado. Saliendo...')
         self.salida = 1
@@ -85,8 +91,10 @@ class RobotControllerI(drobots.RobotController):
                 self.bot.drive(0,0)
 
 
-    def robotDestroyed(self):
-        pass
+    def robotDestroyed(self,current=None):
+        print("El robot ha sido destruido")
+        self.salida = 1
+        current.adapter.getCommunicator().shutdown()
 
 
 sys.exit(Cliente().main(sys.argv))
