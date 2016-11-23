@@ -45,6 +45,11 @@ class PlayerI(drobots.Player):
         print("Has perdido")
         self.salida = 1
         current.adapter.getCommunicator().shutdown()
+        
+    def gameAbort(self, current=None):
+        print('Juego Abortado. Saliendo...')
+        self.salida = 1
+        current.adapter.getCommunicator().shutdown()
 
 class RobotControllerI(drobots.RobotController):
     def __init__(self,bot):
@@ -52,7 +57,7 @@ class RobotControllerI(drobots.RobotController):
         self.speed = 100
 
     def turn(self,current=None):
-        '''location = self.bot.location()
+        location = self.bot.location()
         angulo = math.atan(location.y/location.x)*100
         print(location)
         if(location.x == 500):
@@ -77,7 +82,7 @@ class RobotControllerI(drobots.RobotController):
         if(location.x  > 490 and location.x < 510 and location.y  > 480 and location.y < 510):
             self.speed = 10
             if location.x == 500 and location.y == 500:
-                self.bot.drive(0,0)'''
+                self.bot.drive(0,0)
 
 
     def robotDestroyed(self):
