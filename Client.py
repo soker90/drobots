@@ -66,35 +66,33 @@ class RobotControllerI(drobots.RobotController):
         location = self.bot.location()
         angulo = math.atan(location.y/location.x)*100
         print(location)
-        if(location.x == 500):
-            if location.y > 500:
+        if(location.x == 200):
+            if location.y > 200:
                 self.bot.drive(270,self.speed)
             else:
                 self.bot.drive(90,self.speed)
-        elif location.y == 500:
-            if location.x > 500:
+        elif location.y == 200:
+            if location.x > 200:
                 self.bot.drive(180,self.speed)
             else:
                 self.bot.drive(0,self.speed)
-        elif(location.y <500 and location.x <500):
+        elif(location.y <200 and location.x <200):
             self.bot.drive(angulo,self.speed)
-        elif(location.y >500 and location.x >500):
+        elif(location.y >200 and location.x >200):
             self.bot.drive(180+angulo,self.speed)
-        elif(location.y >500 and location.x <500):
+        elif(location.y >200and location.x <200):
             self.bot.drive(270+angulo,self.speed)
-        elif(location.y <500 and location.x > 500):
+        elif(location.y <200 and location.x > 200):
             self.bot.drive(90+angulo,self.speed)
 
-        if(location.x  > 490 and location.x < 510 and location.y  > 480 and location.y < 510):
+        if(location.x  > 190 and location.x < 210 and location.y  > 180 and location.y < 210):
             self.speed = 10
-            if location.x == 500 and location.y == 500:
+            if location.x == 200 and location.y == 200:
                 self.bot.drive(0,0)
 
 
     def robotDestroyed(self,current=None):
         print("El robot ha sido destruido")
-        self.salida = 1
-        current.adapter.getCommunicator().shutdown()
 
 
 sys.exit(Cliente().main(sys.argv))
