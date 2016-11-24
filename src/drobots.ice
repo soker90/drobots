@@ -9,15 +9,23 @@ module drobots {
 
   exception NoEnoughEnergy{};
 
-  interface Robot {
+  interface RobotBase {
     void drive(int angle, int speed) throws NoEnoughEnergy;
     short damage() throws NoEnoughEnergy;
     short speed() throws NoEnoughEnergy;
     Point location() throws NoEnoughEnergy;
     short energy() throws NoEnoughEnergy;
+  };
+
+  interface Attacker extends RobotBase {
     bool cannon(int angle, int distance) throws NoEnoughEnergy;
+  };
+
+  interface Defender extends RobotBase {
     int scan(int angle, int wide) throws NoEnoughEnergy;
   };
+
+  interface Robot extends Attacker, Defender {};
 
   interface RobotController {
     void turn();

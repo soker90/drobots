@@ -22,6 +22,16 @@ run8:
 run9: 
 	./Client.py --Ice.Config=client.config 'drobots9'
 
+start: /tmp/db/registry /tmp/db/node1
+	icegridnode --Ice.Config=src/node1.config &
+
+stop:
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node1";
+	killall icegridnode
+
+/tmp/db/%:
+	mkdir -p $@
 
 clean:
 	rm *~
+	rm -r /tmp/db
