@@ -10,7 +10,6 @@ from RobotController import *
 
 class Factory(Services.Factory):
     def make(self, tipo, current=None):
-        print "llega factory"
         if (tipo == 0):
             RobotControllerServant = RobotControllerAtaque()
         else:

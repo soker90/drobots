@@ -24,6 +24,17 @@ run9:
 
 start: /tmp/db/registry /tmp/db/node1
 	icegridnode --Ice.Config=src/node1.config &
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application add 'icegrid.xml'" &
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
+
+enable-container:
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "server enable Container"
+
+enable-factory:
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "server enable Factory1"
+
+run-player:
+    icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "server start Player";
 
 stop:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node1";
