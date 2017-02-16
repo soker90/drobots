@@ -33,15 +33,15 @@ class Cliente(Ice.Application):
         nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
 
         try:
-            print 'Haciendo login'
+            print('Haciendo login')
             game.login(player, nick)
-            print 'Esperando robots'
+            print('Esperando robots')
         except drobots.GameInProgress:
-            print "Partida en curso."
+            print("Partida en curso.")
         except drobots.InvalidProxy:
-            print "Proxy inválido"
+            print("Proxy inválido")
         except drobots.InvalidName:
-            print "Nombre inválido"
+            print("Nombre inválido")
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -59,18 +59,14 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self, bot, current=None):
-        if (bot.ice_isA("::drobots::Attacker")):
-            tipo = 0
-        elif (bot.ice_isA("::drobots::Defender")):
-            tipo = 1
-
         proxy = current.adapter.getCommunicator().stringToProxy("factory1")
         factory = Services.FactoryPrx.checkedCast(proxy)
-        print "llega"
-        robot = factory.make(tipo)
-        print("robot" + robot)
+        robotController = factory.make(bot)
         self.i = self.i + 1
-        return robot
+        return robotController
+
+    def makeDetectorController(self, current=None):
+        print "detectores"
 
     def win(self,current=None):
         print("Has ganado")

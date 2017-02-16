@@ -10,16 +10,12 @@ import random
 import Container
 
 class RobotControllerAtaque(drobots.Attacker):
-    def __init__(self):
-        self.bot = None
+    def __init__(self, bot):
+        self.bot = bot
         self.speed = 100
         self.i = 0
         self.container = None
         self.anguloDisparo = None
-        self.proxys = None
-
-    def setBot(self, bot):
-        self.bot = bot;
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -49,17 +45,20 @@ class RobotControllerAtaque(drobots.Attacker):
             self.speed = 100
 
     def disparar(self):
-        nProxys = len(self.proxys)
+        print bot.damage()
+        #nProxys = len(self.proxys)
         random.randint(1, 100)
 
-        n = random.randint(1,nProxys)
+        #n = random.randint(1,nProxys)
 
-        print(self.proxys[n].getAnguloDisparo())
+        #print(self.proxys[n].getAnguloDisparo())
+
 
 
     def turn(self,current=None):
-        if( self.proxys is None):
-            self.proxys = self.getProxys()
+        print bot.damage()
+        #if( self.proxys is None):
+        #    self.proxys = self.getProxys()
         location = self.bot.location()
         angulo = math.atan(location.y/location.x)
         if(self.i%2==0):
@@ -68,34 +67,31 @@ class RobotControllerAtaque(drobots.Attacker):
         else:
             self.mover(location, angulo)
 
-        self.i = self.i+1
+        self.i += 1
 
     def getProxys(self):
         proxys = []
-        lista = self.container.list()
+
+        proxy_container = current.adapter.getCommunicator().stringToProxy("container")
+        container = Services.ContainerPrx.checkedCast(proxy_container)
+        lista = container.list()
 
         for i in range(1, len(lista)+1):
             proxy = lista[str(i)]
             proxy = drobots.RobotControllerPrx.uncheckedCast(proxy)
             proxys.append(proxy)
-            print("1")
         return proxys
 
     def robotDestroyed(self, current=None):
         print("Robot atacante destruido")
 
 class RobotControllerDefensa(drobots.Defender):
-    def __init__(self, bot, container):
-        self.bot = bot
+    def __init__(self, bot):
         self.speed = 100
         self.i = 0
         self.danyo = 0
-        self.container = container
         self.anguloDisparo = None
-        self.proxys = container.list()
-
-    def setBot(self, bot):
-        self.bot = bot;
+        self.bot = bot
 
     def mover(self,location,angulo):
         if (location.x == 500):
@@ -142,12 +138,13 @@ class RobotControllerDefensa(drobots.Defender):
         self.i = self.i + 1
         location = self.bot.location()
         print(location)
+        self.mover(location, angulo)
 
-        if (self.bot.damage() > self.danyo):
-            self.mover(location,angulo)
-        else:
-            self.bot.drive(angulo, 0)
-            self.scan()
+        #if (self.bot.damage() > self.danyo):
+        #    self.mover(location,angulo)
+        #else:
+        #    self.bot.drive(angulo, 0)
+        #    #self.scan()
 
     def getAnguloDisparo(self):
         return self.anguloDisparo

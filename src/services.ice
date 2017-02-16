@@ -14,6 +14,6 @@ module Services {
   };
 
   interface Factory {
-    drobots::RobotController* make(int tipo);
+    drobots::RobotController* make(drobots::Robot* bot);
   };
 };

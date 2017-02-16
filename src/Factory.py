@@ -9,18 +9,20 @@ import Services
 from RobotController import *
 
 class Factory(Services.Factory):
-    def make(self, tipo, current=None):
-        if (tipo == 0):
-            RobotControllerServant = RobotControllerAtaque()
+    def make(self, bot, current=None):
+        if (bot.ice_isA("::drobots::Attacker")):
+            RobotControllerServant = RobotControllerAtaque(bot)
         else:
-            RobotControllerServant = RobotControllerDefensa()
+            RobotControllerServant = RobotControllerDefensa(bot)
+
+
 
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
         robotController = drobots.RobotControllerPrx.uncheckedCast(directProxy)
 
 
-        proxy_container = current.adapter.stringToProxy("container")
+        proxy_container = current.adapter.getCommunicator().stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxy_container)
 
         container.link(robotController.ice_getIdentity().name, robotController)
@@ -33,8 +35,9 @@ class Server(Ice.Application):
         broker = self.communicator()
         servant = Factory()
         adapter = broker.createObjectAdapter("FactoryAdapter")
-        adapter.add(servant, broker.stringToIdentity("factory"))
-
+        identity = broker.getProperties().getProperty("Identity")
+        print adapter.add(servant, broker.stringToIdentity(identity))
+        sys.stdout.flush()
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -42,4 +45,6 @@ class Server(Ice.Application):
         return 0
 
 if __name__ == '__main__':
+    print("hhdhdhd")
+    sys.stdout.flush()
     sys.exit(Server().main(sys.argv))
