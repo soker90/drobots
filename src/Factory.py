@@ -10,6 +10,7 @@ from RobotController import *
 
 class Factory(Services.Factory):
     def make(self, bot, current=None):
+        print "hola factory"
         if (bot.ice_isA("::drobots::Attacker")):
             RobotControllerServant = RobotControllerAtaque(bot)
         else:
@@ -26,6 +27,8 @@ class Factory(Services.Factory):
         container = Services.ContainerPrx.checkedCast(proxy_container)
 
         container.link(robotController.ice_getIdentity().name, robotController)
+
+        print robotController
 
         return robotController
 

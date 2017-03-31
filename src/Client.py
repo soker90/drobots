@@ -61,12 +61,13 @@ class PlayerI(drobots.Player):
     def makeController(self, bot, current=None):
         proxy = current.adapter.getCommunicator().stringToProxy("factory1")
         factory = Services.FactoryPrx.checkedCast(proxy)
+        print("factory" + str(factory))
         robotController = factory.make(bot)
         self.i = self.i + 1
         return robotController
 
     def makeDetectorController(self, current=None):
-        print "detectores"
+        print("detectores")
 
     def win(self,current=None):
         print("Has ganado")
