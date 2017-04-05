@@ -52,26 +52,44 @@ class Cliente(Ice.Application):
 class PlayerI(drobots.Player):
 
     def __init__(self):
-        self.salida = 1
+        self.factorias = 1
         self.i = 1
+        self.detectores = 1
         #proxy = current.adapter.getCommunicator().stringToProxy("container")
         #self.container = Services.ContainerPrx.checkedCast(proxy)
 
 
     def makeController(self, bot, current=None):
+        print("Entrando al make controller")
+
         proxy = current.adapter.getCommunicator().stringToProxy("factory1")
         factory = Services.FactoryPrx.checkedCast(proxy)
-        print("factory" + str(factory))
-        robotController = factory.make(bot)
+        robotController = factory.make(bot, self.i)
+
+
+
+        proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
+        container = Services.ContainerPrx.checkedCast(proxyContainer)
+
+        if (bot.ice_isA("::drobots::Attacker")):
+            tipo = "Atacante"
+        else:
+            tipo = "Defensor"
+
+        container.link(tipo + str(self.i),robotController)
+
         self.i = self.i + 1
+
+        #self.factorias += 1
+
         return robotController
+
 
     def makeDetectorController(self, current=None):
         print("detectores")
 
     def win(self,current=None):
         print("Has ganado")
-        self.salida = 0
         current.adapter.getCommunicator().shutdown()
 
     def lose(self, current=None):

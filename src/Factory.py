@@ -9,28 +9,29 @@ import Services
 from RobotController import *
 
 class Factory(Services.Factory):
-    def make(self, bot, current=None):
-        print "hola factory"
-        if (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot)
-        else:
-            RobotControllerServant = RobotControllerDefensa(bot)
+    def make(self, bot, id, current=None):
+        print( "hola factory")
 
+        if (bot.ice_isA("::drobots::Attacker")):
+            RobotControllerServant = RobotControllerAtaque(bot,id)
+        else:
+            RobotControllerServant = RobotControllerDefensa(bot,id)
 
 
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
-        robotController = drobots.RobotControllerPrx.uncheckedCast(directProxy)
+        robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
 
 
-        proxy_container = current.adapter.getCommunicator().stringToProxy("container")
-        container = Services.ContainerPrx.checkedCast(proxy_container)
+        #proxy_container = current.adapter.getCommunicator().stringToProxy("container")
+        #container = Services.ContainerPrx.checkedCast(proxy_container)
 
-        container.link(robotController.ice_getIdentity().name, robotController)
+        #container.link(robotController.ice_getIdentity().name, robotController)
 
-        print robotController
 
         return robotController
+    def makeDetector(self, current = None):
+        print("Detector Factory")
 
 
 class Server(Ice.Application):
@@ -39,7 +40,8 @@ class Server(Ice.Application):
         servant = Factory()
         adapter = broker.createObjectAdapter("FactoryAdapter")
         identity = broker.getProperties().getProperty("Identity")
-        print adapter.add(servant, broker.stringToIdentity(identity))
+        proxy = adapter.add(servant, broker.stringToIdentity(identity))
+        print(proxy)
         sys.stdout.flush()
         adapter.activate()
         self.shutdownOnInterrupt()
@@ -47,7 +49,4 @@ class Server(Ice.Application):
 
         return 0
 
-if __name__ == '__main__':
-    print("hhdhdhd")
-    sys.stdout.flush()
-    sys.exit(Server().main(sys.argv))
+sys.exit(Server().main(sys.argv))

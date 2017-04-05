@@ -8,14 +8,17 @@ import drobots
 import math
 import random
 import Container
+import Services
+
 
 class RobotControllerAtaque(drobots.Attacker):
-    def __init__(self, bot):
+    def __init__(self, bot, id):
         self.bot = bot
         self.speed = 100
         self.i = 0
         self.container = None
         self.anguloDisparo = None
+        self.bot_id = id
 
     def mover(self, location, angulo):
         if (location.x == 500):
@@ -45,7 +48,7 @@ class RobotControllerAtaque(drobots.Attacker):
             self.speed = 100
 
     def disparar(self):
-        print bot.damage()
+        print (self.bot.damage())
         #nProxys = len(self.proxys)
         random.randint(1, 100)
 
@@ -56,7 +59,7 @@ class RobotControllerAtaque(drobots.Attacker):
 
 
     def turn(self,current=None):
-        print bot.damage()
+        print (self.bot.damage())
         #if( self.proxys is None):
         #    self.proxys = self.getProxys()
         location = self.bot.location()
@@ -69,7 +72,7 @@ class RobotControllerAtaque(drobots.Attacker):
 
         self.i += 1
 
-    def getProxys(self):
+    def getProxys(self, current=None):
         proxys = []
 
         proxy_container = current.adapter.getCommunicator().stringToProxy("container")
