@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- mode:python; coding: utf-8; tab-width -*-
 
 import sys
@@ -10,7 +10,7 @@ import math
 import random
 import Container
 from RobotController import *
-from Factory import *
+from Factory import makeDetector
 import Services
 
 class Cliente(Ice.Application):
@@ -62,10 +62,12 @@ class PlayerI(drobots.Player):
     def makeController(self, bot, current=None):
         print("Entrando al make controller")
 
-        proxy = current.adapter.getCommunicator().stringToProxy("factory1")
-        factory = Services.FactoryPrx.checkedCast(proxy)
-        robotController = factory.make(bot, self.i)
+        #proxy = current.adapter.getCommunicator().stringToProxy("factory1")
+        #factory = Services.FactoryPrx.checkedCast(proxy)
+        #robotController = factory.make(bot, self.i)
 
+        robotController = RobotControllerAtaque(bot, sel.i)
+        print("test makecontroller")
 
 
         proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
@@ -76,7 +78,7 @@ class PlayerI(drobots.Player):
         else:
             tipo = "Defensor"
 
-        container.link(tipo + str(self.i),robotController)
+        container.link(tipo + str(self.i), robotController)
 
         self.i = self.i + 1
 

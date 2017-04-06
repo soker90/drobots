@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -7,15 +7,17 @@ Ice.loadSlice('services.ice --all -I .')
 import drobots
 import Services
 from RobotController import *
+from RobotController import RobotControllerAtaque
+from RobotController import RobotControllerDefensa
 
-class Factory(Services.Factory):
+class FactoryI(Services.Factory):
     def make(self, bot, id, current=None):
         print( "hola factory")
 
         if (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot,id)
+            RobotControllerServant = RobotControllerAtaque(bot, id)
         else:
-            RobotControllerServant = RobotControllerDefensa(bot,id)
+            RobotControllerServant = RobotControllerDefensa(bot, id)
 
 
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
@@ -37,12 +39,14 @@ class Factory(Services.Factory):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
-        servant = Factory()
+
         adapter = broker.createObjectAdapter("FactoryAdapter")
         identity = broker.getProperties().getProperty("Identity")
+        servant = FactoryI()
         proxy = adapter.add(servant, broker.stringToIdentity(identity))
         print(proxy)
         sys.stdout.flush()
+
         adapter.activate()
         self.shutdownOnInterrupt()
         broker.waitForShutdown()

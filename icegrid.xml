@@ -123,6 +123,7 @@
                <property name="Game.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
                <property name="Game" value="drobots4"/>
             </properties>
+            <distrib icepatch="${application}.IcePatch2/server"/>
             <adapter name="PlayerAdapter" endpoints="default" id="${server}.PlayerAdapter">
                <object identity="player"/>
             </adapter>
