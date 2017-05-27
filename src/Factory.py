@@ -39,10 +39,11 @@ class FactoryI(Services.Factory):
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        servant = FactoryI()
 
         adapter = broker.createObjectAdapter("FactoryAdapter")
         identity = broker.getProperties().getProperty("Identity")
-        servant = FactoryI()
+
         proxy = adapter.add(servant, broker.stringToIdentity(identity))
         print(proxy)
         sys.stdout.flush()

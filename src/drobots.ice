@@ -29,7 +29,6 @@ module drobots {
 
   interface RobotController {
     void turn();
-    void setBot(Robot* bot);
     void robotDestroyed();
   };
 
@@ -50,9 +49,15 @@ module drobots {
   exception InvalidName{
     string reason;
   };
+  exception BadNumberOfPlayers{};
 
   interface Game {
     void login(Player* p, string nick)
       throws GameInProgress, InvalidProxy, InvalidName;
+  };
+
+  interface GameFactory {
+    Game* makeGame(string gameName, int numPlayers)
+      throws InvalidName, BadNumberOfPlayers;
   };
 };
