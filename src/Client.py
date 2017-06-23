@@ -10,8 +10,8 @@ import math
 import random
 import Container
 from RobotController import *
-from Factory import makeDetector
 import Services
+from Factory import *
 
 class Cliente(Ice.Application):
     def run(self, argv):
@@ -46,7 +46,7 @@ class Cliente(Ice.Application):
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
 
-        return playerServant.salida
+        return 0
 
 
 class PlayerI(drobots.Player):
@@ -60,15 +60,11 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self, bot, current=None):
-        print("Entrando al make controller")
 
         #proxy = current.adapter.getCommunicator().stringToProxy("factory1")
+        #print(proxy)
         #factory = Services.FactoryPrx.checkedCast(proxy)
-        #robotController = factory.make(bot, self.i)
-
-        robotController = RobotControllerAtaque(bot, sel.i)
-        print("test makecontroller")
-
+        #robotController = factory.make(bot)
 
         proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxyContainer)
@@ -78,13 +74,14 @@ class PlayerI(drobots.Player):
         else:
             tipo = "Defensor"
 
-        container.link(tipo + str(self.i), robotController)
+        #container.link(tipo + str(self.i), robotController)
+        print(tipo)
 
         self.i = self.i + 1
 
-        #self.factorias += 1
+        self.factorias += 1
 
-        return robotController
+        #return robotController
 
 
     def makeDetectorController(self, current=None):

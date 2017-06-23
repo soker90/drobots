@@ -4,7 +4,7 @@
 start: /tmp/db/registry /tmp/db/node1
 	icegridnode --Ice.Config=src/node1.config &
 	sleep 3
-	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application add 'icegrid.xml'"
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application add 'icegrid.xml'" &
 	sleep 1
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
 
