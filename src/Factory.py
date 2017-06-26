@@ -26,20 +26,22 @@ class FactoryI(Services.Factory):
 
         print("fin factory")
         return robotController
-    def makeDetector(self, current = None):
-        print("Detector Factory")
+
+    def makeDetector(self, container_robots, current=None):
+
+        return 0
 
 
 class Server(Ice.Application):
     def run(self, argv):
         broker = self.communicator()
+        adapter = broker.createObjectAdapter("FactoryAdapter")
         servant = FactoryI()
 
-        adapter = broker.createObjectAdapter("FactoryAdapter")
-        identity = broker.getProperties().getProperty("Identity")
-        print(identity)
 
+        identity = broker.getProperties().getProperty("Identity")
         proxy = adapter.add(servant, broker.stringToIdentity(identity))
+
         print(proxy)
         sys.stdout.flush()
 
@@ -49,4 +51,5 @@ class Server(Ice.Application):
 
         return 0
 
-sys.exit(Server().main(sys.argv))
+if __name__ == '__main__':
+    sys.exit(Server().main(sys.argv))

@@ -26,10 +26,14 @@ shutdown:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node1"
 	killall icegridnode
 
+startSencillo:
+	cd sencillo && make run11
+
 /tmp/db/%:
 	mkdir -p $@
 
 clean:
 	rm -rf /tmp/db
-	rm -rf *~
+	rm -rf src/*~
+	rm -rf src/*.pyc
 	
