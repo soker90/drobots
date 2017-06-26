@@ -9,6 +9,7 @@ import Services
 from RobotController import *
 from RobotController import RobotControllerAtaque
 from RobotController import RobotControllerDefensa
+from RobotController import RobotControllerDetector
 
 class FactoryI(Services.Factory):
     def make(self, bot, current=None):
@@ -27,9 +28,13 @@ class FactoryI(Services.Factory):
         print("fin factory")
         return robotController
 
-    def makeDetector(self, container_robots, current=None):
+    def makeDetector(self, current=None):
+        RobotControllerServant = RobotControllerDetector()
+        proxyController = current.adapter.addWithUUID(RobotControllerServant)
+        directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
+        robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
 
-        return 0
+        return robotController
 
 
 class Server(Ice.Application):

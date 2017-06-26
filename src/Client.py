@@ -20,7 +20,10 @@ class Cliente(Ice.Application):
         adapter = broker.createObjectAdapter('PlayerAdapter')
         adapter.activate()
 
-        playerServant = PlayerI()
+        proxy = broker.stringToProxy("container")
+        container = Services.ContainerPrx.checkedCast(proxy)
+
+        playerServant = PlayerI(container)
         proxyPlayer = adapter.addWithUUID(playerServant)
         proxyPlayerId = proxyPlayer.ice_getIdentity()
         proxyDirectPlayer = adapter.createDirectProxy(proxyPlayerId)
@@ -51,43 +54,47 @@ class Cliente(Ice.Application):
 
 class PlayerI(drobots.Player):
 
-    def __init__(self):
-        self.factorias = 1
+    def __init__(self, container, current=None):
+        self.factoria = 1
         self.i = 1
         self.detectores = 1
-        #proxy = current.adapter.getCommunicator().stringToProxy("container")
-        #self.container = Services.ContainerPrx.checkedCast(proxy)
+        self.container = container
 
 
     def makeController(self, bot, current=None):
 
-        #proxy = current.adapter.getCommunicator().stringToProxy("factory1")
-        #print(proxy)
-        #factory = Services.FactoryPrx.checkedCast(proxy)
-        #robotController = factory.make(bot)
+        proxy = current.adapter.getCommunicator().stringToProxy("factory"+str(self.factoria))
+        print(proxy)
+        factory = Services.FactoryPrx.checkedCast(proxy)
+        robotController = factory.make(bot)
 
-        proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
-        container = Services.ContainerPrx.checkedCast(proxyContainer)
+        #if (bot.ice_isA("::drobots::Attacker")):
+        #    tipo = "Atacante"
+        #else:
+        #    tipo = "Defensor"
 
-        if (bot.ice_isA("::drobots::Attacker")):
-            tipo = "Atacante"
-        else:
-            tipo = "Defensor"
-
-        #container.link(tipo + str(self.i), robotController)
-        print(tipo)
+        self.container.link(str(self.i), robotController)
+        #print(tipo)
 
         self.i = self.i + 1
 
-        self.factorias += 1
+        #self.factoria += 1
 
-        #return robotController
+        return robotController
 
 
     def makeDetectorController(self, current=None):
-        print("detectores")
+        proxy = current.adapter.getCommunicator().stringToProxy("factory" + str(self.factoria))
+        print(proxy)
+        factory = Services.FactoryPrx.checkedCast(proxy)
+        robotController = factory.makeDetector()
 
-    def win(self,current=None):
+        self.container.link(str(self.i), robotController)
+        self.i = self.i + 1
+
+        return robotController
+
+    def win(self, current=None):
         print("Has ganado")
         current.adapter.getCommunicator().shutdown()
 
