@@ -12,13 +12,13 @@ import Services
 
 
 class RobotControllerAtaque(drobots.Attacker):
-    def __init__(self, bot, id):
+    def __init__(self, bot):
         self.bot = bot
         self.speed = 100
         self.i = 0
         self.container = None
         self.anguloDisparo = None
-        self.bot_id = id
+        #self.bot_id = id
 
     def mover(self, location, angulo):
         if (location.x == 500):

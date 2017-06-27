@@ -9,12 +9,16 @@ module Services {
 
   interface Container {
     void link(string key, Object* proxy) throws AlreadyExists;
+    void linkFactory(string key, Object* proxy) throws AlreadyExists;
+    void linkController(string key, Object* proxy) throws AlreadyExists;
     void unlink(string key) throws NoSuchKey;
     ObjectPrxDict list();
+    ObjectPrxDict listFactory();
+    ObjectPrxDict listController();
   };
 
   interface Factory {
-    drobots::RobotController* make(drobots::Robot* bot);
+    drobots::RobotController* make(drobots::Robot* bot, int index);
     drobots::DetectorController makeDetectorController();
   };
 };

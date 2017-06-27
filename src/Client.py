@@ -64,23 +64,33 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self, bot, current=None):
-        proxy = current.adapter.getCommunicator().stringToProxy("factory"+str(self.factoria))
-        factory = Services.FactoryPrx.checkedCast(proxy)
-        robotController = factory.make(bot)
+        print("Entrando makecontroller")
 
-        if (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot)
-        else:
-            RobotControllerServant = RobotControllerDefensa(bot)
+        factorias = self.container.listFactory()
+        factory = Services.FactoryPrx.checkedCast(factorias.values()[self.factoria])
+        robotController = factory.make(bot, self.i)
 
-        self.container.link(str(self.i), robotController)
+
+
+
+        #proxy = current.adapter.getCommunicator().stringToProxy("factory"+str(self.factoria))
+        #factory = Services.FactoryPrx.checkedCast(proxy)
+        #robotController = factory.make(bot)
+
+
+        #if (bot.ice_isA("::drobots::Attacker")):
+        #    RobotControllerServant = RobotControllerAtaque(bot)
+        #else:
+        #    RobotControllerServant = RobotControllerDefensa(bot)
+
+
         print(self.i)
 
         self.i = self.i + 1
 
         #self.factoria += 1
 
-        return RobotControllerServant
+        return robotController
 
 
     def makeDetectorController(self, current=None):

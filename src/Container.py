@@ -10,6 +10,8 @@ import Services
 class ContainerI(Services.Container):
     def __init__(self):
         self.proxies = {}
+        self.proxiesFactory = {}
+        self.proxiesController = {}
 
     def link(self, key, proxy, current=None):
         if key in self.proxies:
@@ -17,6 +19,20 @@ class ContainerI(Services.Container):
 
         print("link: {0} -> {1}".format(key, proxy))
         self.proxies[key] = proxy
+
+    def linkFactory(self, key, proxy, current=None):
+        if key in self.proxiesFactory:
+            raise Services.AlreadyExists(key)
+
+        print("linkFactoria: {0} -> {1}".format(key, proxy))
+        self.proxiesFactory[key] = proxy
+
+    def linkController(self, key, proxy, current=None):
+        if key in self.proxiesController:
+            raise Services.AlreadyExists(key)
+
+        print("linkController: {0} -> {1}".format(key, proxy))
+        self.proxiesController[key] = proxy
 
     def unlink(self, key, current=None):
         if not key in self.proxies:
@@ -27,6 +43,12 @@ class ContainerI(Services.Container):
 
     def list(self, current=None):
         return self.proxies
+
+    def listFactory(self, current=None):
+        return self.proxiesFactory
+
+    def listController(self, current=None):
+        return self.proxiesController
 
 
 class Server(Ice.Application):

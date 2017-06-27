@@ -3,6 +3,7 @@
 
 import sys
 import Ice
+
 Ice.loadSlice('services.ice --all -I .')
 import drobots
 import Services
@@ -10,19 +11,23 @@ from RobotController import *
 from RobotController import RobotControllerAtaque
 from RobotController import RobotControllerDefensa
 
+
 class FactoryI(Services.Factory):
-    def make(self, bot, current=None):
-        print( "hola factory")
+    def make(self, bot, index, current=None):
+        print("hola factory")
 
         if (bot.ice_isA("::drobots::Attacker")):
             RobotControllerServant = RobotControllerAtaque(bot)
         else:
             RobotControllerServant = RobotControllerDefensa(bot)
 
-
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
         robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
+
+        proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
+        container = drobots.ContainerPrx.checkedCast(proxyContainer)
+        container.linkController(index, robotController)
 
         print("fin factory")
         return robotController
@@ -31,7 +36,7 @@ class FactoryI(Services.Factory):
         RobotControllerServant = RobotControllerDetector()
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
-        robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
+        robotController = drobots.DetectorControllerPrx.checkedCast(directProxy)
 
         return robotController
 
@@ -42,9 +47,13 @@ class Server(Ice.Application):
         adapter = broker.createObjectAdapter("FactoryAdapter")
         servant = FactoryI()
 
-
         identity = broker.getProperties().getProperty("Identity")
         proxy = adapter.add(servant, broker.stringToIdentity(identity))
+
+        proxyContainer = broker.stringToProxy("container")
+        container = drobots.ContainerPrx.checkedCast(proxyContainer)
+
+        container.linkFactory(identity[-1], proxy)
 
         print(proxy)
         sys.stdout.flush()
@@ -54,6 +63,7 @@ class Server(Ice.Application):
         broker.waitForShutdown()
 
         return 0
+
 
 if __name__ == '__main__':
     sys.exit(Server().main(sys.argv))
