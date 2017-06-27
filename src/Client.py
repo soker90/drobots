@@ -3,6 +3,7 @@
 
 import sys
 import Ice
+
 Ice.loadSlice('drobots.ice')
 Ice.loadSlice('services.ice --all -I .')
 import drobots
@@ -12,6 +13,7 @@ import Container
 from RobotController import *
 import Services
 from Factory import *
+from DetectorController import *
 
 class Cliente(Ice.Application):
     def run(self, argv):
@@ -62,25 +64,23 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self, bot, current=None):
-
         proxy = current.adapter.getCommunicator().stringToProxy("factory"+str(self.factoria))
-        print(proxy)
         factory = Services.FactoryPrx.checkedCast(proxy)
         robotController = factory.make(bot)
 
-        #if (bot.ice_isA("::drobots::Attacker")):
-        #    tipo = "Atacante"
-        #else:
-        #    tipo = "Defensor"
+        if (bot.ice_isA("::drobots::Attacker")):
+            RobotControllerServant = RobotControllerAtaque(bot)
+        else:
+            RobotControllerServant = RobotControllerDefensa(bot)
 
         self.container.link(str(self.i), robotController)
-        #print(tipo)
+        print(self.i)
 
         self.i = self.i + 1
 
         #self.factoria += 1
 
-        return robotController
+        return RobotControllerServant
 
 
     def makeDetectorController(self, current=None):

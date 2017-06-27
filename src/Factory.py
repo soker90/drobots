@@ -9,7 +9,6 @@ import Services
 from RobotController import *
 from RobotController import RobotControllerAtaque
 from RobotController import RobotControllerDefensa
-from RobotController import RobotControllerDetector
 
 class FactoryI(Services.Factory):
     def make(self, bot, current=None):

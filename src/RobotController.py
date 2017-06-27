@@ -156,10 +156,3 @@ class RobotControllerDefensa(drobots.Defender):
 
     def robotDestroyed(self, current=None):
         print("Robot defensor destruido")
-
-class RobotControllerDetector(drobots.DetectorController):
-    def __init__(self):
-        pass
-
-    def alert(self, pos, enemies):
-        print("Pos:" +str(pos)+" num: "+str(enemies))
