@@ -64,7 +64,8 @@ class PlayerI(drobots.Player):
 
 
     def makeController(self, bot, current=None):
-        print("Entrando makecontroller")
+        print("PLAYER: Entrando makecontroller")
+        sys.stdout.flush()
 
         factorias = self.container.listFactory()
         proxy = factorias[str(self.factoria)]
@@ -80,24 +81,29 @@ class PlayerI(drobots.Player):
         #    RobotControllerServant = RobotControllerAtaque(bot)
         #else:
         #    RobotControllerServant = RobotControllerDefensa(bot)
-        print(self.i)
-        sys.stdout.flush()
         self.i = self.i + 1
 
 
         #self.factoria += 1
+        print("PLAYER: RobotController -> "+str(robotController))
+        sys.stdout.flush()
+        print("PLAYER: Saliendo makeController")
+        sys.stdout.flush()
 
         return robotController
 
 
     def makeDetectorController(self, current=None):
-        proxy = current.adapter.getCommunicator().stringToProxy("factory" + str(self.factoria))
-        print(proxy)
+        print("PLAYER: Entrando makeDetectorcontroller")
+        sys.stdout.flush()
+        factorias = self.container.listFactory()
+        proxy = factorias[str(self.factoria)]
         factory = Services.FactoryPrx.checkedCast(proxy)
-        robotController = factory.makeDetector()
+        robotController = factory.makeDetector(self.i)
 
-        self.container.link(str(self.i), robotController)
         self.i = self.i + 1
+        print("PLAYER: Saliendo makeDetectorcontroller")
+        sys.stdout.flush()
 
         return robotController
 

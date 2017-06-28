@@ -8,8 +8,5 @@ import drobots
 import Services
 
 class RobotControllerDetector(drobots.DetectorController):
-    def __init__(self):
-        pass
-
     def alert(self, pos, enemies):
         print("Pos:" +str(pos)+" num: "+str(enemies))

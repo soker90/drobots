@@ -17,28 +17,28 @@ class ContainerI(Services.Container):
         if key in self.proxies:
             raise Services.AlreadyExists(key)
 
-        print("link: {0} -> {1}".format(key, proxy))
+        print("CONTAINER: link: {0} -> {1}".format(key, proxy))
         self.proxies[key] = proxy
 
     def linkFactory(self, key, proxy, current=None):
         if key in self.proxiesFactory:
             raise Services.AlreadyExists(key)
 
-        print("linkFactoria: {0} -> {1}".format(key, proxy))
+        print("CONTAINER: linkFactoria: {0} -> {1}".format(key, proxy))
         self.proxiesFactory[key] = proxy
 
     def linkController(self, key, proxy, current=None):
         if key in self.proxiesController:
             raise Services.AlreadyExists(key)
 
-        print("linkController: {0} -> {1}".format(key, proxy))
+        print("CONTAINER: linkController: {0} -> {1}".format(key, proxy))
         self.proxiesController[key] = proxy
 
     def unlink(self, key, current=None):
         if not key in self.proxies:
             raise Services.NoSuchKey(key)
 
-        print("unlink: {0}".format(key))
+        print("CONTAINER: unlink: {0}".format(key))
         del self.proxies[key]
 
     def list(self, current=None):
