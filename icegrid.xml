@@ -33,7 +33,7 @@
             <env>directory=/tmp/db/player</env>
             <properties>
                <property name="Game.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
-               <property name="Game" value="drobots11"/>
+               <property name="Game" value="drobots12"/>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
             <adapter name="PlayerAdapter" endpoints="tcp" id="${server}.PlayerAdapter">

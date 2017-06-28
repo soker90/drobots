@@ -5,6 +5,9 @@ run:
 	./Client.py --Ice.Config=client.config 'drobots1 -t -e 1.1:tcp -h atclab.esi.uclm.es -p 4061'
 run11: 
 	./Client.py --Ice.Config=client.config 'drobots11'
+
+run12: 
+	./Client.py --Ice.Config=client.config 'drobots12'
 run2: 
 	./Client.py --Ice.Config=client.config 'drobots2'
 run3: 

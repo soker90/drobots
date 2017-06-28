@@ -7,6 +7,11 @@ import Ice
 Ice.loadSlice('services.ice --all -I .')
 import drobots
 import Services
+
+import sys
+import Ice
+import os
+
 from RobotController import *
 from RobotController import RobotControllerAtaque
 from RobotController import RobotControllerDefensa
@@ -14,7 +19,9 @@ from RobotController import RobotControllerDefensa
 
 class FactoryI(Services.Factory):
     def make(self, bot, index, current=None):
-        print("hola factory")
+        sys.stdout.flush()
+        print("***Entrando make factory")
+        sys.stdout.flush()
 
         if (bot.ice_isA("::drobots::Attacker")):
             RobotControllerServant = RobotControllerAtaque(bot)
@@ -23,13 +30,16 @@ class FactoryI(Services.Factory):
 
         proxyController = current.adapter.addWithUUID(RobotControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
-        robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
+        robotController = drobots.RobotControllerPrx.uncheckedCast(directProxy)
 
         proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
-        container = drobots.ContainerPrx.checkedCast(proxyContainer)
-        container.linkController(index, robotController)
+        container = Services.ContainerPrx.checkedCast(proxyContainer)
+        container.linkController(str(index), robotController)
 
-        print("fin factory")
+        sys.stdout.flush()
+        print("***Saliendo make factory")
+        sys.stdout.flush()
+
         return robotController
 
     def makeDetector(self, current=None):
@@ -51,9 +61,11 @@ class Server(Ice.Application):
         proxy = adapter.add(servant, broker.stringToIdentity(identity))
 
         proxyContainer = broker.stringToProxy("container")
-        container = drobots.ContainerPrx.checkedCast(proxyContainer)
+        container = Services.ContainerPrx.checkedCast(proxyContainer)
 
         container.linkFactory(identity[-1], proxy)
+
+        print(container.listFactory())
 
         print(proxy)
         sys.stdout.flush()

@@ -27,7 +27,7 @@ shutdown:
 	killall icegridnode
 
 startSencillo:
-	cd sencillo && make run11
+	cd sencillo && make run12
 
 /tmp/db/%:
 	mkdir -p $@
