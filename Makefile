@@ -1,6 +1,10 @@
 #!/usr/bin/make -f
 # -*- mode:makefile -*-
 
+debug: start runPlayer
+	tail -f /tmp/db/node1/out.txt &
+	tail -f /tmp/db/node1/err.txt &
+
 start: /tmp/db/registry /tmp/db/node1
 	icegridnode --Ice.Config=src/node1.config &
 	sleep 3

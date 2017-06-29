@@ -25,7 +25,9 @@ class Cliente(Ice.Application):
         proxy = broker.stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxy)
 
-        playerServant = PlayerI(container)
+        nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
+
+        playerServant = PlayerI(container, nick)
         proxyPlayer = adapter.addWithUUID(playerServant)
         proxyPlayerId = proxyPlayer.ice_getIdentity()
         proxyDirectPlayer = adapter.createDirectProxy(proxyPlayerId)
@@ -35,7 +37,7 @@ class Cliente(Ice.Application):
         proxyGame = broker.propertyToProxy("Game")
         game = drobots.GamePrx.checkedCast(proxyGame)
 
-        nick = ''.join(random.choice('qwertyuiopasdfghjkl') for _ in range(3))
+
 
         try:
             print('Haciendo login')
@@ -47,6 +49,8 @@ class Cliente(Ice.Application):
             print("Proxy inválido")
         except drobots.InvalidName:
             print("Nombre inválido")
+        except drobots.BadNumberOfPlayers:
+            print("Número de jugadores no válidos")
 
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -56,35 +60,28 @@ class Cliente(Ice.Application):
 
 class PlayerI(drobots.Player):
 
-    def __init__(self, container, current=None):
+    def __init__(self, container, nick, current=None):
         self.factoria = 1
+        self.nick = nick
         self.i = 1
         self.detectores = 1
-        self.container = container
+        self.factorias = container.listFactory()
 
 
     def makeController(self, bot, current=None):
         print("PLAYER: Entrando makecontroller")
         sys.stdout.flush()
 
-        factorias = self.container.listFactory()
-        proxy = factorias[str(self.factoria)]
+        index = self.nick + str(self.i)
+
+        proxy = self.factorias[str(self.factoria)]
         factory = Services.FactoryPrx.checkedCast(proxy)
-        robotController = factory.make(bot, self.i)
+        robotController = factory.make(bot, index)
 
-        #proxy = current.adapter.getCommunicator().stringToProxy("factory"+str(self.factoria))
-        #factory = Services.FactoryPrx.checkedCast(proxy)
-        #robotController = factory.make(bot)
-
-
-        #if (bot.ice_isA("::drobots::Attacker")):
-        #    RobotControllerServant = RobotControllerAtaque(bot)
-        #else:
-        #    RobotControllerServant = RobotControllerDefensa(bot)
         self.i = self.i + 1
-
-
         #self.factoria += 1
+        #if self.factoria > 4:
+        #    self.factoria = 1
         print("PLAYER: RobotController -> "+str(robotController))
         sys.stdout.flush()
         print("PLAYER: Saliendo makeController")
@@ -96,10 +93,11 @@ class PlayerI(drobots.Player):
     def makeDetectorController(self, current=None):
         print("PLAYER: Entrando makeDetectorcontroller")
         sys.stdout.flush()
-        factorias = self.container.listFactory()
-        proxy = factorias[str(self.factoria)]
+        proxy = self.factorias[str(self.factoria)]
         factory = Services.FactoryPrx.checkedCast(proxy)
-        robotController = factory.makeDetector(self.i)
+
+        index = self.nick + str(self.i)
+        robotController = factory.makeDetector(index)
 
         self.i = self.i + 1
         print("PLAYER: Saliendo makeDetectorcontroller")

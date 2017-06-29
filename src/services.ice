@@ -18,7 +18,16 @@ module Services {
   };
 
   interface Factory {
-    drobots::RobotController* make(drobots::Robot* bot, int index);
-    drobots::DetectorController* makeDetector(int index);
+    drobots::RobotController* make(drobots::Robot* bot, string index);
+    drobots::DetectorController* makeDetector(string index);
   };
+
+  interface AttackerController extends drobots::RobotController{
+    void setContainer(string proxy);
+  };
+
+  interface DefenderController extends drobots::RobotController{
+    void setContainer(string proxy);
+  };
+
 };

@@ -25,17 +25,20 @@ class FactoryI(Services.Factory):
         sys.stdout.flush()
 
         if bot.ice_isA("::drobots::Attacker") and bot.ice_isA("::drobots::Defender"):
-            RobotControllerServant = RobotController(bot)
+            RobotControllerServant = RobotController(bot, index)
             print("FACTORY: Robot Completo")
+            index = index+"C"
             sys.stdout.flush()
         elif (bot.ice_isA("::drobots::Attacker")):
-            RobotControllerServant = RobotControllerAtaque(bot)
+            RobotControllerServant = RobotControllerAtaque(bot, index)
             print("FACTORY: Robot Atacante")
+            index = index + "A"
             sys.stdout.flush()
         else:
-            RobotControllerServant = RobotControllerDefensa(bot)
+            RobotControllerServant = RobotControllerDefensa(bot, index)
             print("FACTORY: Robot Defensor")
             sys.stdout.flush()
+            index = index + "D"
 
 
 
@@ -47,6 +50,8 @@ class FactoryI(Services.Factory):
         proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxyContainer)
         container.linkController(str(index), robotController)
+
+        RobotControllerServant.setContainer(proxyContainer)
 
         sys.stdout.flush()
         print("FACTORY: Saliendo make")
@@ -61,6 +66,8 @@ class FactoryI(Services.Factory):
         proxyController = current.adapter.addWithUUID(DetectorControllerServant)
         directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
         robotController = drobots.DetectorControllerPrx.checkedCast(directProxy)
+
+        index = index + "X"
 
         proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
         container = Services.ContainerPrx.checkedCast(proxyContainer)
