@@ -30,7 +30,6 @@ deploy: /tmp/db/deploy
 	cp *.ice /tmp/db/deploy
 	icepatch2calc /tmp/db/deploy
 
-
 update:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
 
@@ -54,9 +53,6 @@ shutdown:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node3"
 	killall icegridnode
 
-startSencillo:
-	cd sencillo && make run12
-
 /tmp/db/%:
 	mkdir -p $@
 
@@ -64,4 +60,5 @@ clean:
 	rm -rf /tmp/db
 	rm -rf src/*~
 	rm -rf src/*.pyc
+	rm -rf src/__pycache__
 	
