@@ -2,7 +2,7 @@
 # -*- mode:makefile -*-
 
 run: 
-	./Client.py --Ice.Config=client.config 'drobots1 -t -e 1.1:tcp -h atclab.esi.uclm.es -p 4061'
+	./Client.py --Ice.Config=client.config $1
 run11: 
 	./Client.py --Ice.Config=client.config 'drobots11'
 

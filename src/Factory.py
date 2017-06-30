@@ -12,10 +12,8 @@ import sys
 import Ice
 import os
 
-from RobotController import RobotControllerAtaque
-from RobotController import RobotControllerDefensa
-from RobotController import RobotController
-from DetectorController import RobotControllerDetector
+from RobotController import *
+from DetectorController import *
 
 
 class FactoryI(Services.Factory):
@@ -24,8 +22,10 @@ class FactoryI(Services.Factory):
         print("FACTORY: Entrando make")
         sys.stdout.flush()
 
-        if bot.ice_isA("::drobots::Attacker") and bot.ice_isA("::drobots::Defender"):
-            RobotControllerServant = RobotController(bot, index)
+        RobotControllerServant = None
+
+        if bot.ice_isA("::drobots::Robot"):
+            RobotControllerServant = RobotControllerCompleto(bot, index)
             print("FACTORY: Robot Completo")
             index = index+"C"
             sys.stdout.flush()
@@ -34,26 +34,23 @@ class FactoryI(Services.Factory):
             print("FACTORY: Robot Atacante")
             index = index + "A"
             sys.stdout.flush()
-        else:
+        elif(bot.ice_isA("::drobots::Defender")):
             RobotControllerServant = RobotControllerDefensa(bot, index)
             print("FACTORY: Robot Defensor")
             sys.stdout.flush()
             index = index + "D"
 
+        if RobotControllerServant is not None:
+            proxyController = current.adapter.addWithUUID(RobotControllerServant)
+            directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
+            robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
 
+            proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
+            container = Services.ContainerPrx.checkedCast(proxyContainer)
+            container.linkController(str(index), robotController)
 
+            RobotControllerServant.setContainer(proxyContainer)
 
-        proxyController = current.adapter.addWithUUID(RobotControllerServant)
-        directProxy = current.adapter.createDirectProxy(proxyController.ice_getIdentity())
-        robotController = drobots.RobotControllerPrx.checkedCast(directProxy)
-
-        proxyContainer = current.adapter.getCommunicator().stringToProxy("container")
-        container = Services.ContainerPrx.checkedCast(proxyContainer)
-        container.linkController(str(index), robotController)
-
-        RobotControllerServant.setContainer(proxyContainer)
-
-        sys.stdout.flush()
         print("FACTORY: Saliendo make")
         sys.stdout.flush()
 

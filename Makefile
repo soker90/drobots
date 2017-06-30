@@ -1,13 +1,24 @@
 #!/usr/bin/make -f
 # -*- mode:makefile -*-
 
-debug: start runPlayer
+all: start runPlayer runPlayer2
+
+debug: all
 	tail -f /tmp/db/node1/out.txt &
 	tail -f /tmp/db/node1/err.txt &
+	tail -f /tmp/db/node2/out.txt &
+	tail -f /tmp/db/node2/err.txt &
+	tail -f /tmp/db/node3/out.txt &
+	tail -f /tmp/db/node3/err.txt &
 
-start: /tmp/db/registry /tmp/db/node1
-	icegridnode --Ice.Config=src/node1.config &
-	sleep 3
+start: /tmp/db/registry /tmp/db/node1 /tmp/db/node2 /tmp/db/node3
+	icegridnode --Ice.Config=node1.config &
+	while ! netstat -lptn 2> /dev/null | grep ":4061"; do sleep 1; done
+	sleep 1
+	icegridnode --Ice.Config=node2.config &
+	sleep 1
+	icegridnode --Ice.Config=node3.config &
+	sleep 2
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application add 'icegrid.xml'" &
 	sleep 1
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
@@ -24,10 +35,15 @@ enable-factory:
 runPlayer:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "server start Player"
 
+runPlayer2:
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "server start Player2"
+
 stop: shutdown clean
 
 shutdown:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node1"
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node2"
+	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "node shutdown node3"
 	killall icegridnode
 
 startSencillo:

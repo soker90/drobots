@@ -24,10 +24,27 @@ module Services {
 
   interface AttackerController extends drobots::RobotController{
     void setContainer(string proxy);
+    drobots::Point posicion();
   };
 
   interface DefenderController extends drobots::RobotController{
     void setContainer(string proxy);
+    drobots::Point posicion();
+    int getEnemigoX();
+    int getEnemigoY();
+  };
+
+  interface CompletoController extends drobots::RobotController{
+    void setContainer(string proxy);
+    drobots::Point posicion();
+    int getEnemigoX();
+    int getEnemigoY();
+  };
+
+  interface DetectorControllerI extends drobots::DetectorController{
+    drobots::Point posicion();
+    int getEnemigoX();
+    int getEnemigoY();
   };
 
 };

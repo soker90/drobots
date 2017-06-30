@@ -5,7 +5,7 @@
       <distrib icepatch="${application}.IcePatch2/server"/>
       <server-template id="FactoryTemplate">
          <parameter name="index"/>
-         <server id="Factory${index}" activation="always" exe="./Factory.py" pwd="/home/edu/PycharmProjects/drobots/src/">
+         <server id="Factory${index}" activation="always" exe="./src/Factory.py">
             <properties>
                <property name="Ice.ThreadPool.Server.Size" value="10"/>
                <property name="Ice.StdOut" value="/tmp/db/node${index}/out.txt"/>
@@ -17,10 +17,25 @@
             </adapter>
          </server>
       </server-template>
+      <server-template id="IcePatch2">
+       <parameter name="instance-name" default="${application}.IcePatch2"/>
+       <parameter name="endpoints" default="default"/>
+       <parameter name="directory"/>
+       <server id="${instance-name}" exe="icepatch2server" application-distrib="false" activation="on-demand">
+         <adapter name="IcePatch2" endpoints="${endpoints}">
+           <object identity="${instance-name}/server" type="::IcePatch2::FileServer"/>
+         </adapter>
+         <properties>
+            <property name="IcePatch2.InstanceName" value="${instance-name}"/>
+            <property name="IcePatch2.Directory" value="${directory}"/>
+         </properties>
+       </server>
+
+    </server-template>
       <node name="node1">
          <variable name="Ice.StdErr" value="/tmp/db/node1/err.txt"/>
          <variable name="Ice.StdOut" value="/tmp/db/node1/out.txt"/>
-         <server id="Container" activation="always" exe="./Container.py" pwd="/home/edu/PycharmProjects/drobots/src/">
+         <server id="Container" activation="always" exe="./src/Container.py">
             <properties>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
@@ -29,15 +44,40 @@
             </adapter>
          </server>
          <server-instance template="FactoryTemplate" index="1"/>
-         <server id="Player" activation="manual" exe="./Client.py" pwd="/home/edu/PycharmProjects/drobots/src/">
+      </node>
+      <node name="node2">
+         <variable name="Ice.StdErr" value="/tmp/db/node2/err.txt"/>
+         <variable name="Ice.StdOut" value="/tmp/db/node2/out.txt"/>
+         <server-instance template="FactoryTemplate" index="2"/>
+         <server id="Player" activation="manual" exe="./src/Client.py">
             <env>directory=/tmp/db/player</env>
             <properties>
                <property name="Game.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
                <property name="Game" value="drobots12"/>
+               <property name="Private" value="factory"/>
+               <property name="Private.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
             <adapter name="PlayerAdapter" endpoints="tcp" id="${server}.PlayerAdapter">
                <object identity="player"/>
+            </adapter>
+         </server>
+      </node>
+      <node name="node3">
+         <variable name="Ice.StdErr" value="/tmp/db/node3/err.txt"/>
+         <variable name="Ice.StdOut" value="/tmp/db/node3/out.txt"/>
+         <server-instance template="FactoryTemplate" index="3"/>
+         <server id="Player2" activation="manual" exe="./src/Client2.py">
+            <env>directory=/tmp/db/player2</env>
+            <properties>
+               <property name="Game.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
+               <property name="Game" value="drobots12"/>
+               <property name="Private" value="factory"/>
+               <property name="Private.Locator" value="IceGrid/Locator -t:tcp -h atclab.esi.uclm.es -p 4061"/>
+            </properties>
+            <distrib icepatch="${application}.IcePatch2/server"/>
+            <adapter name="PlayerAdapter" endpoints="tcp" id="${server}.PlayerAdapter">
+               <object identity="player2"/>
             </adapter>
          </server>
       </node>
