@@ -11,7 +11,7 @@ debug: all
 	tail -f /tmp/db/node3/out.txt &
 	tail -f /tmp/db/node3/err.txt &
 
-start: /tmp/db/registry /tmp/db/node1 /tmp/db/node2 /tmp/db/node3
+start: carpetas deploy
 	icegridnode --Ice.Config=node1.config &
 	while ! netstat -lptn 2> /dev/null | grep ":4061"; do sleep 1; done
 	sleep 1
@@ -22,6 +22,14 @@ start: /tmp/db/registry /tmp/db/node1 /tmp/db/node2 /tmp/db/node3
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application add 'icegrid.xml'" &
 	sleep 1
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
+
+carpetas: /tmp/db/registry /tmp/db/node1/distrib/drobots /tmp/db/node2/distrib/drobots /tmp/db/node3/distrib/drobots 
+
+deploy: /tmp/db/deploy
+	cp src/*.py /tmp/db/deploy
+	cp *.ice /tmp/db/deploy
+	icepatch2calc /tmp/db/deploy
+
 
 update:
 	icegridadmin --Ice.Config=src/locator.config -u user -p pass -e "application update 'icegrid.xml'"
