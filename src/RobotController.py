@@ -42,7 +42,6 @@ class RobotControllerAtaque(Services.AttackerController):
                     controller = Services.CompletoControllerPrx.checkedCast(controllers[key])
                     self.listCompleto.append(controller)
                 elif key[-1] == "X":
-                    print("detector")
                     sys.stdout.flush()
                     controller = Services.DetectorControllerIPrx.checkedCast(controllers[key])
                     self.listDetector.append(controller)
@@ -88,7 +87,7 @@ class RobotControllerAtaque(Services.AttackerController):
                 self.shoot(cont + 1)
 
         if enemigoY > -1 and enemigoX > -1:
-            print("enemigo X:" + str(enemigoX) + " Y:" + str(enemigoY))
+            print("ATACANTE " + self.key + " Disparando a X:" + str(enemigoX) + " Y:" + str(enemigoY))
             x = enemigoX - self.location.x
             y = enemigoY - self.location.y
             angulo = int(math.degrees(math.atan2(y, x)))
@@ -232,7 +231,6 @@ class RobotControllerDefensa(Services.DefenderController):
                 self.enemigoY = 0
 
             print("DEFENSOR " + self.key + ": Enemigo detectado cerca de X=" + str(self.enemigoX) + " Y=" + str(self.enemigoY))
-            print("DEFENSOR " + self.key + ": Posicion X=" + str(self.location.x) + " Y=" + str(self.location.y)+" Angulo: "+str(angulo))
 
     def mover(self):
         print("DEFENSOR " + self.key + ": Moviendo robot")
@@ -259,7 +257,6 @@ class RobotControllerDefensa(Services.DefenderController):
 
     def posicion(self, current=None):
         pos = self.bot.location()
-        print("DEFENSOR " + self.key + ": Posicion -> " + str(pos))
         return pos
 
     def getEnemigoX(self, current=None):
@@ -360,7 +357,7 @@ class RobotControllerCompleto(Services.CompletoController):
                 enemigoX = self.getEnemigoX()
                 enemigoY = self.getEnemigoY()
         if enemigoY > -1 and enemigoX > -1:
-            print("enemigo X:" + str(enemigoX) + " Y:" + str(enemigoY))
+            print("COMPLETO " + self.key +" Disparando a X:" + str(enemigoX) + " Y:" + str(enemigoY))
             x = enemigoX - self.location.x
             y = enemigoY - self.location.y
             angulo = int(math.degrees(math.atan2(y, x)))
@@ -426,7 +423,6 @@ class RobotControllerCompleto(Services.CompletoController):
 
     def posicion(self, current=None):
         pos = self.bot.location()
-        print("COMPLETO " + self.key + ": Posicion -> " + str(pos))
         return pos
 
     def getEnemigoX(self, current=None):

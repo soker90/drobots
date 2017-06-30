@@ -13,7 +13,7 @@ class RobotControllerDetector(Services.DetectorControllerI):
         self.enemies = 0
 
     def alert(self, pos, enemies, current=None):
-        print("DETECTOR: Posicion:" +str(pos)+" num: "+str(enemies))
+        print("DETECTOR: Detectados " + str(enemies) + " enemigos")
         sys.stdout.flush()
         self.posicion = pos
         self.enemies = enemies

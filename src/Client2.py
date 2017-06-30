@@ -38,7 +38,7 @@ class Cliente(Ice.Application):
         #game = drobots.GamePrx.checkedCast(proxyGame)
         proxyGame = broker.propertyToProxy("Private")
         gameFactory = drobots.GameFactoryPrx.checkedCast(proxyGame)
-        game = gameFactory.makeGame("Eduardo22", 2)
+        game = gameFactory.makeGame("PartidaPrivada3333", 2)
 
 
 
