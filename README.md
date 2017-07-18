@@ -17,11 +17,16 @@ cd ~ && wget http://arco.esi.uclm.es/~joseluis.segura/python-zeroc-ice/ubuntu/16
 dpkg -i python3-zeroc-ice36_3.6.2.1-6_amd64.deb
 ```
 
-
 ### En Archlinux
 
 ```sh
 yaourt -Sy zeroc-ice python-zeroc-ice git
+```
+
+### Descarga del repositorio
+
+```sh
+git clone https://github.com/soker90/drobots
 ```
 
 ## Ejecución
