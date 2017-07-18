@@ -21,7 +21,7 @@ dpkg -i python3-zeroc-ice36_3.6.2.1-6_amd64.deb
 ### En Archlinux
 
 ```sh
-yaourt -S zeroc-ice python-zeroc-ice git
+yaourt -Sy zeroc-ice python-zeroc-ice git
 ```
 
 ## Ejecución
